@@ -3,8 +3,8 @@ This is a standalone, importable SCScorer model. It does not have tensorflow as 
 dependency and is a more attractive option for deployment. The calculations are
 fast enough that there is no real reason to use GPUs (via tf) instead of CPUs (via np)
 '''
-
 import math, sys, random, os
+import pickle
 import numpy as np
 import time
 import rdkit.Chem as Chem
@@ -95,7 +95,6 @@ class SCScorer():
 
     def _load_vars(self, weight_path):
         if weight_path.endswith('pickle'):
-            import cPickle as pickle
             with open(weight_path, 'rb') as fid:
                 self.vars = pickle.load(fid)
                 self.vars = [x.tolist() for x in self.vars]
@@ -105,7 +104,9 @@ class SCScorer():
                 json_str = json_bytes.decode('utf-8')            # 2. string (i.e. JSON)
                 self.vars = json.loads(json_str)
                 self.vars = [np.array(x) for x in self.vars]
-
+        else: 
+            print("Cannot find the weights")
+            exit()
 
 if __name__ == '__main__':
     model = SCScorer()
